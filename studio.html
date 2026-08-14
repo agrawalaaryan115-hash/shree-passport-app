@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Studio - Passport Photo Maker</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    /* स्क्रीन पर फोटो को पासपोर्ट साइज ग्रिड में रखने का इंजन */
+#printSheet {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(3.5cm, 1fr)) !important;
+    gap: 15px !important;
+    justify-content: center !important;
+    align-content: start !important;
+    width: 100% !important;
+    max-width: 210mm !important; /* A4 की चौड़ाई स्क्रीन पर */
+    background: #ffffff !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* हर एक फोटो का साइज स्क्रीन पर पासपोर्ट साइज लॉक करने के लिए */
+.grid-photo-item {
+    width: 3.5cm !important;
+    height: 4.5cm !important;
+    border: 1px solid #000 !important;
+    box-sizing: border-box !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+.grid-photo-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+    /* 1. स्क्रीन पर आपके पुराने प्रोफेशनल लेआउट को वापस लाने का कोड */
+    .container, .main-layout {
+        display: grid !important;
+        grid-template-columns: 1fr 350px !important; /* A4 शीट लेफ्ट में और टूल्स राइट में */
+        gap: 20px !important;
+        padding: 20px !important;
+    }
+
+    .sidebar-tools, .control-panel {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* केवल और केवल प्रिंटर मशीन के लिए (Ctrl+P दबाने पर) */
+    @media print {
+        body, html {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        /* ए4 साइज की शीट पर फोटो को 5 की लाइन में सेट करने का इंजन */
+        #printSheet {
+            width: 210mm !important;
+            height: 297mm !important;
+            margin: 0 !important;
+            padding: 10mm 12mm !important; /* चारों कोनों पर परफेक्ट मार्जिन */
+            box-sizing: border-box !important;
+            display: grid !important;
+            /* 5 कॉलम का ग्रिड ताकि एक लाइन में ठीक 5 फोटो आएं */
+            grid-template-columns: repeat(5, 35mm) !important; 
+            gap: 6mm 5mm !important; /* फोटो के बीच कटिंग के लिए परफेक्ट गैप */
+            justify-content: center !important;
+            align-content: start !important;
+        }
+
+        /* हर एक फोटो का साइज और बॉर्डर पासपोर्ट स्टैंडर्ड पर फिक्स */
+        .grid-photo-item {
+            width: 35mm !important;  /* 3.5 cm चौड़ाई */
+            height: 45mm !important; /* 4.5 cm लम्बाई */
+            border: 0.5px solid #000000 !important; /* कटिंग के लिए पतली काली बॉर्डर */
+            .grid-photo-item img {
+    box-sizing: border-box !important;
+}
+
+            page-break-inside: avoid !important;
+        }
+
+        .grid-photo-item img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* प्रिंट करते समय बटन और साइडबार को छुपाने के लिए */
+        .sidebar-tools, .control-panel, button, select, input, .no-print, .back-btn {
+            display: none !important;
+        }
+    }
+
+    
+       
+/* केवल मोबाइल और टैबलेट स्क्रीन के लिए (स्क्रीन साइज 768px से छोटा होने पर) */
+@media screen and (max-width: 768px) {
+    /* 1. पूरे लेआउट को एक कॉलम में करना ताकि बटन नीचे साफ दिखें */
+    .container, .main-layout, body {
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+        overflow-x: hidden !important;
+    }
+
+    /* 2. ए4 शीट को मोबाइल स्क्रीन के हिसाब से छोटा करके फिट करना */
+    #printSheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        padding: 10px !important;
+        /* मोबाइल स्क्रीन पर भी 5 फोटो की लाइन सही दिखे इसलिए साइज थोड़ा छोटा (1.8cm) किया */
+        grid-template-columns: repeat(5, minmax(1.8cm, 1fr)) !important; 
+        gap: 3px !important;
+        box-shadow: none !important;
+        background: #fff !important;
+    }
+
+    /* 3. मोबाइल स्क्रीन पर हर फोटो का डिस्प्ले साइज छोटा करना (प्रिंटिंग पर इसका असर नहीं पड़ेगा) */
+    .grid-photo-item {
+        width: 100% !important;
+        height: 2.3cm !important; /* मोबाइल पर दिखने के लिए ऊंचाई */
+    }
+
+    /* 4. साइडबार और बटन्स को मोबाइल पर पूरा चौड़ा (Full Width) दिखाना */
+    .sidebar-tools, .control-panel {
+        width: 100% !important;
+        margin-top: 20px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    /* 5. तैरते हुए बॉर्डर स्लाइडर को मोबाइल पर सबसे नीचे सही से फिक्स करना */
+    div[style*="position: fixed"] {
+        position: static !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin-top: 15px !important;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Left Side: Live Dynamic Sheet Workspace -->
+        <div class="workspace-area">
+            <div class="print-sheet paper-a4" id="printSheet">
+                <!-- JavaScript automatically populates photos here -->
+            </div>
+        </div>
+
+        <!-- Right Side: Advanced Printing Controls Menu -->
+        <div class="sidebar-tools">
+            <button class="back-btn" onclick="window.location.href='workshop.html'">← Back</button>
+            
+            <div>
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 3px;">Layout Studio</h2>
+                <p style="font-size: 0.8rem; color: #8a99ad;">Step 3: Grid Matrix & Printing</p>
+            </div>
+
+            <!-- SECTION 1: Paper Selector -->
+            <div class="tool-box">
+                <h3 class="section-title">1. Printing Paper Size</h3>
+                <div class="input-group" style="margin-top: 8px;">
+                    <select id="paperSizeSelector" onchange="updatePaperType()">
+                        <option value="paper_a4">A4 Size Photo Paper</option>
+                        <option value="paper_a5">A5 Size Photo Paper</option>
+                        <option value="paper_4x6">4 x 6 Inches Glossy Card</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Copies Selection -->
+            <div class="tool-box">
+                <h3 class="section-title">2. Photos Count (Sankhya)</h3>
+                <div class="input-group" style="margin-top: 8px; gap: 12px;">
+                    <input type="number" id="photoCountInput" min="1" max="100" value="8" oninput="generateGrid(false)">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #8a99ad; font-size: 0.85rem; text-transform: uppercase;">
+                        <input type="checkbox" id="fullPageCheckbox" onchange="generateGrid(this.checked)" style="accent-color: #00d2ff; width: 18px; height: 18px;"> Full Page Fill
+                    </label>
+                </div>
+            </div>
+
+            <!-- Main Print Action Target -->
+                        <!-- Sabhi 3 Buttons ka Naya Professional Set -->
+            <button class="action-btn" style="background: linear-gradient(135deg, #0072ff 0%, #00d2ff 100%); margin-bottom: 10px; width: 100%; color: white; border: none; padding: 14px; font-size: 0.95rem; font-weight: 600; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;" onclick="window.print()">Print Layout Sheet ⎙</button>
+            <button class="action-btn" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); margin-bottom: 10px; width: 100%; color: white; border: none; padding: 14px; font-size: 0.95rem; font-weight: 600; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;" onclick="downloadAsPDF()">Save as PDF Document 📄</button>
+            <button class="action-btn" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); width: 100%; color: white; border: none; padding: 14px; font-size: 0.95rem; font-weight: 600; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;" onclick="downloadAsImage()">Save as HD Image 🖼️</button>
+
+        </div>
+    </div>
+    <script>
+    // Memory se photo data, background aur filters fetch karne ka engine
+    var savedPhoto = localStorage.getItem("processedPhoto");
+    var savedFilters = localStorage.getItem("photoFilter") || "none";
+    var savedBg = localStorage.getItem("photoBgColor") || "#ffffff";
+
+    function updatePaperType() {
+        var selector = document.getElementById('paperSizeSelector');
+        var sheet = document.getElementById('printSheet');
+        if (selector && sheet) {
+            sheet.className = "print-sheet " + selector.value;
+            var isFullPage = document.getElementById('fullPageCheckbox').checked;
+            generateGrid(isFullPage);
+        }
+    }
+function generateGrid(isFullPageFill) {
+    var sheet = document.getElementById('printSheet');
+    var countInput = document.getElementById('photoCountInput');
+    if (!sheet || !countInput) return;
+
+    sheet.innerHTML = ""; 
+    var totalPhotos = parseInt(countInput.value) || 0;
+    var paperType = document.getElementById('paperSizeSelector').value;
+    
+    // Layout limits
+    var maxCapacity = 30; 
+    if (paperType === "paper_a5") maxCapacity = 16;
+    if (paperType === "paper_4x6") maxCapacity = 12;
+
+    if (isFullPageFill) {
+        totalPhotos = maxCapacity;
+        countInput.disabled = true;
+        countInput.style.opacity = "0.4";
+    } else {
+        countInput.disabled = false;
+        countInput.style.opacity = "1";
+        if (totalPhotos > maxCapacity) {
+            totalPhotos = maxCapacity;
+            countInput.value = maxCapacity;
+        }
+    }
+
+    for (var i = 0; i < totalPhotos; i++) {
+        var photoDiv = document.createElement('div');
+        photoDiv.className = "grid-photo-item";
+        photoDiv.style.backgroundColor = savedBg;
+        photoDiv.style.position = "relative";
+        photoDiv.style.overflow = "hidden";
+        photoDiv.style.margin = "0"; // बाहरी गैप पूरी तरह खत्म
+         photoDiv.style.padding = "0"; 
+            photoDiv.style.border = "none"; // यहाँ डिब्बे की बॉर्डर खत्म
+            photoDiv.style.boxSizing = "border-box";
+        
+         // <--- [यह लाइन जोड़ें] पुरानी डिफ़ॉल्ट बॉर्डर खत्म
+            
+        // FIXED DATA TRANSFER ENGINE WITH IMG TAG
+        if (savedPhoto && savedPhoto !== "") {
+            var img = document.createElement('img');
+            img.src = savedPhoto;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            img.style.filter = savedFilters;
+            img.style.display = "block";
+             img.style.margin = "0"; 
+                img.style.padding = "0"; 
+                img.style.border = "none"; // यहाँ फोटो की पुरानी बॉर्डर खत्म // नीचे का डिफ़ॉल्ट स्पेस खत्म
+            photoDiv.appendChild(img);
+        } else {
+            photoDiv.style.backgroundColor = "#ccc"; 
+        }
+        sheet.appendChild(photoDiv);
+    }
+
+
+    
+} 
+
+    // 1. Direct PDF Download Framework
+    function downloadAsPDF() {
+        var element = document.getElementById('printSheet');
+        if(typeof html2pdf === 'undefined') {
+            alert("PDF Library Load Ho Rahi Hai, Kripya 2 Second Baad Try Karein!");
+            return;
+        }
+        var opt = {
+            margin:       10,
+            filename:     'passport_photos_sheet.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    // 2. Direct HD Image Save Framework
+    function downloadAsImage() {
+        var element = document.getElementById('printSheet');
+        if(typeof html2canvas === 'undefined') {
+            alert("Image Library Load Ho Rahi Hai, Kripya 2 Second Baad Try Karein!");
+            return;
+        }
+        html2canvas(element, { useCORS: true, scale: 2 }).then(function(canvas) {
+            var link = document.createElement('a');
+            link.download = 'passport_photos_grid.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        generateGrid(false);
+    });
+</script>
+
+<!-- External dynamic libraries loading via background server injections -->
+<script src="https://cloudflare.com"></script>
+<script src="https://cloudflare.com"></script>
+<!-- ========================================== -->
+
+
+<!-- बॉर्डर को लाइव कंट्रोल करने की सुरक्षित स्क्रिप्ट (JS) -->
+<script>
+
+// यह पुरानी ग्रिड बनते समय बॉर्डर की मोटाई को अपने आप सेट रखेगा
+// नया और सटीक इंजन जो ग्रिड बदलते ही बॉर्डर सेट रखेगा
+var observer = new MutationObserver(function() {
+    adjustPhotoBorder();
+});
+var sheet = document.getElementById('printSheet');
+if (sheet) {
+    observer.observe(sheet, { childList: true });
+}
+
+</script>
+<!-- ========================================== -->
+
+</body>
+</html>

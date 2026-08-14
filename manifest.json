@@ -1,0 +1,17 @@
+{
+  "name": "Free Passport Photo Maker",
+  "short_name": "Passport Photo",
+  "description": "मुफ़्त में पासपोर्ट साइज फोटो बनाएं और प्रिंट करें",
+  "start_url": "workshop.html",
+  "display": "standalone",
+  "background_color": "#1a1f2c",
+  "theme_color": "#00d2ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
