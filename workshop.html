@@ -9,40 +9,18 @@
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         #photoFrame {
-    width: 320px;
-    height: 411px;
-    border: 2px dashed #007bff;
-    position: relative;
-    overflow: hidden; /* बाहर का हिस्सा काट देगा */
-    background-color: #ffffff;
-    cursor: move;
-    margin: 0 auto;
-}
-
-#previewImage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%; /* शुरुआती चौड़ाई */
-    height: auto;
-    transform-origin: center center;
-    display: none;
-}
-
-/* चेहरे को सही जगह पर रखने के लिए एक हल्की सी ओवल गाइडeline */
-.face-guide {
-    position: absolute;
-    top: 15%;
-    left: 20%;
-    width: 60%;
-    height: 60%;
-    border: 2px dashed rgba(0, 123, 255, 0.4);
-    border-radius: 50%;
-    pointer-events: none; /* माउस इसके पार काम करेगा */
-}
+            width: 320px;
+            height: 411px;
+            border: 2px dashed #007bff;
+            position: relative;
+            overflow: hidden;
+            background-color: #ffffff;
+            cursor: move;
+            margin: 0 auto;
+        }
 
         * {
             margin: 0;
@@ -104,19 +82,18 @@
             color: #00d2ff;
             pointer-events: none;
         }
-#previewImage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;        /* फोटो की चौड़ाई को फ्रेम के बराबर लॉक करेगा */
-    height: 100%;       /* फ्रेम की पूरी हाइट कवर करेगा */
-    object-fit: cover;  /* फोटो को बिना खींचे या पिचकाए फ्रेम में भरेगा */
-    object-position: center 15%; /* सबसे ज़रूरी लाइन: फोटो को ऊपर से 15% नीचे (यानी सीधे चेहरे पर) फोकस करके सेट करेगी और पैर-पेट वाला हिस्सा नीचे से अपने आप काट देगी */
-    pointer-events: none;
-    display: none;
-    
-}
 
+        #previewImage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            pointer-events: none;
+            display: none;
+        }
 
         .sidebar-tools {
             background: rgba(13, 16, 28, 0.85);
@@ -166,29 +143,6 @@
             margin-top: 8px;
         }
 
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .color-dot {
-            height: 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .color-dot:hover { transform: scale(1.1); }
-        .color-dot.active { border-color: #00d2ff; box-shadow: 0 0 15px #00d2ff; }
-
-        .c-white { background: #ffffff; }
-        .c-blue { background: #0072ff; }
-        .c-lightblue { background: #a5c7f7; }
-        .c-grey { background: #e0e0e0; }
-
         .slider-group {
             display: flex;
             flex-direction: column;
@@ -224,186 +178,92 @@
             margin-top: 10px;
         }
 
-       @media (max-width: 768px) {
-    /* 1. पूरी बॉडी को मोबाइल स्क्रीन की हाइट में लॉक करेगा ताकि बाहर स्क्रॉल न हो */
-    body {
-        height: 100vh;
-        overflow: hidden;
-        padding: 5px;
-        display: flex;
-        align-items: stretch;
-    }
-    
-    /* 2. मुख्य कंटेनर को भी स्क्रीन के अंदर बांधेगा */
-    .container { 
-        grid-template-columns: 1fr; 
-        grid-template-rows: auto 1fr; /* ऊपर फोटो, नीचे टूल्स */
-        height: 100%;
-        max-height: 100%;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-    
-    /* 3. फोटो प्रीव्यू एरिया की हाइट कम करेगा ताकि नीचे टूल्स के लिए जगह बचे */
-    .preview-area {
-        padding: 10px;
-        min-height: auto;
-        height: 240px; /* फोटो एरिया को छोटा और फिक्स किया */
-        background: #000000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+        @media (max-width: 768px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+                padding: 5px;
+                display: flex;
+                align-items: stretch;
+            }
 
-    /* 4. फोटो फ्रेम को और थोड़ा छोटा (Scale) करेगा ताकि वह 240px के बॉक्स में परफेक्ट दिखे */
-    #photoFrame {
-        transform: scale(0.55); 
-        transform-origin: center center;
-        margin: 0 auto;
-    }
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                height: 100%;
+                max-height: 100%;
+                border-radius: 12px;
+                overflow: hidden;
+            }
 
-    /* 5. सबसे जरूरी: नीचे का टूल्स पैनल बिना स्क्रॉल किए बाकी बची जगह में फिट होगा */
-    .sidebar-tools { 
-        border-left: none; 
-        border-top: 1px solid rgba(255, 255, 255, 0.08); 
-        padding: 12px;
-        overflow-y: auto; /* अगर टूल्स ज्यादा हैं, तो सिर्फ टूल्स बॉक्स के अंदर हल्का स्क्रॉल होगा, पूरा पेज नहीं हिलेगा */
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        height: calc(100vh - 250px); /* बची हुई पूरी जगह लेगा */
-    }
+            .preview-area {
+                padding: 10px;
+                min-height: auto;
+                height: 240px;
+                background: #000000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
 
-    /* 6. अंदर के फालतू बड़े गैप्स और पैडिंग को छोटा करेगा */
-    .tool-box {
-        padding: 8px 12px;
-        border-radius: 10px;
-    }
-    .input-group select {
-        padding: 8px;
-        font-size: 0.85rem;
-    }
-    .color-grid {
-        gap: 6px;
-    }
-    .color-dot {
-        height: 32px;
-    }
-    .next-btn {
-        padding: 10px;
-        font-size: 0.95rem;
-        margin-top: 5px;
-    }
-    .section-title {
-        font-size: 0.85rem;
-    }
-}
-/* क्रोम, एज और सफारी के लिए स्लाइडर थम्ब की नीली चमक हटाना */
-input[type="range"]::-webkit-slider-thumb:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
+            #photoFrame {
+                transform: scale(0.55);
+                transform-origin: center center;
+                margin: 0 auto;
+            }
 
-/* फ़ायरफ़ॉक्स के लिए */
-input[type="range"]::-moz-range-thumb:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
+            .sidebar-tools {
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 12px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                height: calc(100vh - 250px);
+            }
 
-/* पूरे स्लाइडर बॉक्स के फोकस को रीसेट करना */
-#borderSlider:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
+            .tool-box {
+                padding: 8px 12px;
+                border-radius: 10px;
+            }
+            .input-group select {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+            .next-btn {
+                padding: 10px;
+                font-size: 0.95rem;
+                margin-top: 5px;
+            }
+            .section-title {
+                font-size: 0.85rem;
+            }
+        }
 
+        input[type="range"]::-webkit-slider-thumb:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        input[type="range"]::-moz-range-thumb:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        #borderSlider:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
     </style>
-</head>    <script>
-        function updatePhotoRatio() {
-            const selector = document.getElementById("photoSizeSelector");
-            const photoFrame = document.getElementById("photoFrame");
-            const sizeBadge = document.getElementById("dimensionDisplay");
-            
-            if (!selector || !photoFrame) return;
-            
-            const selectedValue = selector.value;
-            
-            // अलग-अलग देशों के हिसाब से फ्रेम का साइज बदलना
-            if (selectedValue === "in_passport") {
-                photoFrame.style.width = "320px";
-                photoFrame.style.height = "411px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 35mm x 45mm";
-            } 
-            else if (selectedValue === "in_visa" || selectedValue === "us_passport") {
-                // 2x2 इंच (Square)
-                photoFrame.style.width = "350px";
-                photoFrame.style.height = "350px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 51mm x 51mm";
-            }
-            else if (selectedValue === "in_pan") {
-                photoFrame.style.width = "250px";
-                photoFrame.style.height = "350px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 25mm x 35mm";
-            }
-            else if (selectedValue === "uk_passport" || selectedValue === "eu_passport" || selectedValue === "au_passport") {
-                photoFrame.style.width = "320px";
-                photoFrame.style.height = "411px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 35mm x 45mm";
-            }
-            else if (selectedValue === "ca_passport") {
-                photoFrame.style.width = "350px";
-                photoFrame.style.height = "490px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 50mm x 70mm";
-            }
-            else if (selectedValue === "ae_visa") {
-                photoFrame.style.width = "344px";
-                photoFrame.style.height = "440px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 43mm x 55mm";
-            }
-            else if (selectedValue === "cn_passport") {
-                photoFrame.style.width = "300px";
-                photoFrame.style.height = "436px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 33mm x 48mm";
-            }
-            else if (selectedValue === "stamp_size") {
-                photoFrame.style.width = "200px";
-                photoFrame.style.height = "250px";
-                if(sizeBadge) sizeBadge.textContent = "Target Size: 20mm x 25mm";
-            }
-            else if (selectedValue === "custom") {
-                photoFrame.style.width = "350px";
-                photoFrame.style.height = "350px";
-                if(sizeBadge) sizeBadge.textContent = "Custom Ratio (Free Crop)";
-            }
-        }
-    
-
-        function processPhoto(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById("previewImage");
-                    const uploadText = document.getElementById("uploadText");
-                    img.src = e.target.result;
-                    img.style.display = "block";
-                    if(uploadText) uploadText.style.display = "none";
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-        function startDragging(event) { event.preventDefault(); }
-    </script>
-
-
+</head>
 <body>
 
     <div class="container">
-        
+
         <!-- Left Side: Photo Frame Click Box -->
         <div class="preview-area">
-                        <label for="actualFileInput" class="photo-canvas-wrapper" id="photoFrame">
-                <!-- चेहरे को सही जगह पर रखने के लिए हल्की ओवल गाइडलाइन -->
-                <div class="face-guide"></div>
+            <label for="actualFileInput" class="photo-canvas-wrapper" id="photoFrame">
+
+                <img id="previewImage" alt="Preview" onmousedown="startDragging(event)" ontouchstart="startDragging(event)">
 
                 <div class="upload-trigger" id="uploadText">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00d2ff" stroke-width="2">
@@ -412,10 +272,9 @@ input[type="range"]::-moz-range-thumb:focus {
                     </svg>
                     <p style="font-size: 0.9rem; font-weight: 500; margin-top: 8px;">Tap to Upload Photo</p>
                 </div>
-                <img id="previewImage" alt="Preview" onmousedown="startDragging(event)">
+
                 <input type="file" id="actualFileInput" accept="image/*" style="display: none;" onchange="processPhoto(event)">
             </label>
-
         </div>
 
         <!-- Right Side: Tools Panel -->
@@ -447,336 +306,351 @@ input[type="range"]::-moz-range-thumb:focus {
             </div>
 
             <div class="tool-box">
-                <h3 class="section-title">2. Smart Background</h3>
-                <div class="color-grid">
-                    <div class="color-dot c-white active" onclick="changeBg('#ffffff', this)" title="White"></div>
-                    <div class="color-dot c-blue" onclick="changeBg('#0072ff', this)" title="Royal Blue"></div>
-                    <div class="color-dot c-lightblue" onclick="changeBg('#a5c7f7', this)" title="Light Blue"></div>
-                    <div class="color-dot c-grey" onclick="changeBg('#e0e0e0', this)" title="Studio Grey"></div>
+                <h3 class="section-title">2. Enhance Adjustments</h3>
+                <div class="slider-group">
+                    <div class="slider-item">
+                        <label>Brightness <span id="brightnessVal">100%</span></label>
+                        <input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="applyFilters()">
+                    </div>
+                    <div class="slider-item">
+                        <label>Contrast <span id="contrastVal">100%</span></label>
+                        <input type="range" id="contrastSlider" min="50" max="150" value="100" oninput="applyFilters()">
+                    </div>
+                    <div style="position: relative; margin-top: 15px; background: #222; padding: 15px; border-radius: 8px; border: 2px solid #00d2ff; width: 100%; box-sizing: border-box;">
+                        <p style="font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; color: #fff; text-align: left; margin-top:0;">Border Thickness (बॉर्डर मोटाई)</p>
+                        <input type="range" id="borderSlider" min="0" max="8" step="1" value="1" oninput="adjustPhotoBorder()" style="width: 100%; cursor: pointer; outline: none;">
+                        <div style="text-align: right; margin-top: 4px;"><span id="border-val" style="font-size: 0.8rem; color: #00d2ff; font-weight: bold;">1px</span></div>
+                    </div>
                 </div>
             </div>
 
-           <div class="tool-box">
-                <h3 class="section-title">3. Enhance Adjustments</h3>
-                <!-- Aapke code ke andar jahan ye div hai, usme ye lines daal lijiye -->
-<div class="slider-group">
-    <div class="slider-item">
-        <label>Brightness <span id="brightnessVal">100%</span></label>
-        <input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="applyFilters()">
-    </div>
-    <div class="slider-item">
-        <label>Contrast <span id="contrastVal">100%</span></label>
-        <input type="range" id="contrastSlider" min="50" max="150" value="100" oninput="applyFilters()">
-    </div>
-    <div style="position: relative; margin-top: 15px; background: #222; padding: 15px; border-radius: 8px; border: 2px solid #00d2ff; width: 100%; box-sizing: border-box;">
-    <p style="font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; color: #fff; text-align: left; margin-top:0;">Border Thickness (बॉर्डर मोटाई)</p>
-    <input type="range" id="borderSlider" min="0" max="8" step="1" value="1" oninput="adjustPhotoBorder()" style="width: 100%; cursor: pointer; outline: none;">
-    <div style="text-align: right; margin-top: 4px;"><span id="border-val" style="font-size: 0.8rem; color: #00d2ff; font-weight: bold;">1px</span></div>
-</div>
-
-</div>
-
+            <!-- Zoom Buttons -->
+            <div style="margin: 20px 0; text-align: center;">
+                <p style="font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; color: #fff;">Zoom Photo (कंधे तक सेट करें)</p>
+                <button type="button" onclick="zoomPhoto(0.1)" style="padding: 8px 20px; font-size: 1.2rem; margin-right: 10px; cursor: pointer; background: #007bff; color: #fff; border: none; border-radius: 4px; font-weight: bold;">+</button>
+                <button type="button" onclick="zoomPhoto(-0.1)" style="padding: 8px 20px; font-size: 1.2rem; cursor: pointer; background: #6c757d; color: #fff; border: none; border-radius: 4px; font-weight: bold;">-</button>
             </div>
 
-            <!-- FIXED: यहाँ window.location हटाकर goToStudio() लगा दिया है ताकि डेटा ट्रांसफर हो सके -->
-                            <!-- ज़ूम करने के लिए स्क्रीन पर दिखने वाले बटन -->
-                <div style="margin: 20px 0; text-align: center;">
-                    <p style="font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; color: #fff;">Zoom Photo (कंधे तक सेट करें)</p>
-                    <button type="button" onclick="zoomPhoto(0.1)" style="padding: 8px 20px; font-size: 1.2rem; margin-right: 10px; cursor: pointer; background: #007bff; color: #fff; border: none; border-radius: 4px; font-weight: bold;">+</button>
-                    <button type="button" onclick="zoomPhoto(-0.1)" style="padding: 8px 20px; font-size: 1.2rem; cursor: pointer; background: #6c757d; color: #fff; border: none; border-radius: 4px; font-weight: bold;">-</button>
-                </div>
- 
             <button class="next-btn" onclick="goToStudio()">Proceed to Layout Studio →</button>
         </div>
-    </div>  
+    </div>
 
- <script>
-    // 1. VAISHVIK VARIABLES (GLOBAL VARIABLES)
-    var currentScale = 1.2; // Shuruati zoom 1.2 (jaise aapne processPhoto me set kiya tha)
-    var finalPhotoData = ""; 
-    var isDragging = false;
-    var startX, startY, imgLeft = 0, imgTop = 0;
+    <script>
+        function updatePhotoRatio() {
+            const selector = document.getElementById("photoSizeSelector");
+            const photoFrame = document.getElementById("photoFrame");
+            const sizeBadge = document.getElementById("dimensionDisplay");
 
-    // 2. PHOTO UPLOAD ENGINE (processPhoto)
-    function processPhoto(event) {
-        var input = event.target || event; 
-        var files = input.files;
-        
-        if (files && files.length > 0) { 
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = document.getElementById('previewImage');
-                var text = document.getElementById('uploadText');
-                
-                finalPhotoData = e.target.result; 
-                
-                if(img && text) {
-                    img.src = finalPhotoData;
-                    img.style.display = 'block'; 
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover'; 
-                    img.style.objectPosition = 'center 15%';
-                    img.style.position = 'absolute';
-                    
-                    // Shuruati position reset aur zoom lagana
-                    imgLeft = 0;
-                    imgTop = 0;
-                    img.style.left = '0px';
-                    img.style.top = '0px';
-                    currentScale = 1.2;
-                    img.style.transform = 'scale(' + currentScale + ')';
+            if (!selector || !photoFrame) return;
 
-                    text.style.display = 'none';  
-                }
-            };
-            reader.readAsDataURL(files[0]); 
+            const selectedValue = selector.value;
+
+            if (selectedValue === "in_passport") {
+                photoFrame.style.width = "320px";
+                photoFrame.style.height = "411px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 35mm x 45mm";
+            }
+            else if (selectedValue === "in_visa" || selectedValue === "us_passport") {
+                photoFrame.style.width = "350px";
+                photoFrame.style.height = "350px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 51mm x 51mm";
+            }
+            else if (selectedValue === "in_pan") {
+                photoFrame.style.width = "250px";
+                photoFrame.style.height = "350px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 25mm x 35mm";
+            }
+            else if (selectedValue === "uk_passport" || selectedValue === "eu_passport" || selectedValue === "au_passport") {
+                photoFrame.style.width = "320px";
+                photoFrame.style.height = "411px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 35mm x 45mm";
+            }
+            else if (selectedValue === "ca_passport") {
+                photoFrame.style.width = "350px";
+                photoFrame.style.height = "490px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 50mm x 70mm";
+            }
+            else if (selectedValue === "ae_visa") {
+                photoFrame.style.width = "344px";
+                photoFrame.style.height = "440px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 43mm x 55mm";
+            }
+            else if (selectedValue === "cn_passport") {
+                photoFrame.style.width = "300px";
+                photoFrame.style.height = "436px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 33mm x 48mm";
+            }
+            else if (selectedValue === "stamp_size") {
+                photoFrame.style.width = "200px";
+                photoFrame.style.height = "250px";
+                if (sizeBadge) sizeBadge.textContent = "Target Size: 20mm x 25mm";
+            }
+            else if (selectedValue === "custom") {
+                photoFrame.style.width = "350px";
+                photoFrame.style.height = "350px";
+                if (sizeBadge) sizeBadge.textContent = "Custom Ratio (Free Crop)";
+            }
         }
-    }
 
- // Apne script me changeBg function ko isse badal dein
-function changeBg(color, element) {
-    var frame = document.getElementById('photoFrame');
-    var img = document.getElementById('previewImage');
-    
-    if (frame) {
-        frame.style.backgroundColor = color;
-    }
-    
-    if (img) {
-        // Agar white background select kiya toh photo normal dikhegi
-        if (color === '#ffffff') {
-            img.style.mixBlendMode = 'normal';
-        } else {
-            // Baaki rangon ke liye blend mode multiply ya luminosity set karein
-            img.style.mixBlendMode = 'multiply'; 
-        }
-    }
+        // 1. GLOBAL VARIABLES
+        var currentScale = 1.0;
+        var finalPhotoData = "";
+        var isDragging = false;
+        var startX, startY, imgLeft = 0, imgTop = 0;
 
-    // Active dot class ko handle karna
-    document.querySelectorAll('.color-dot').forEach(function(dot) {
-        dot.classList.remove('active');
-    });
-    if (element) {
-        element.classList.add('active');
-    }
-}
-    // 4. BRIGHTNESS & CONTRAST ENGINE (applyFilters)
-    function applyFilters() {
-        var img = document.getElementById('previewImage');
-        var bSlider = document.getElementById('brightnessSlider');
-        var cSlider = document.getElementById('contrastSlider');
-        var bValText = document.getElementById('brightnessVal');
-        var cValText = document.getElementById('contrastVal');
+        // 2. PHOTO UPLOAD ENGINE
+        function processPhoto(event) {
+            var input = event.target || event;
+            var files = input.files;
 
-        if (!img) return;
+            if (files && files.length > 0) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById('previewImage');
+                    var text = document.getElementById('uploadText');
 
-        var bValue = bSlider ? bSlider.value : 100;
-        var cValue = cSlider ? cSlider.value : 100;
+                    finalPhotoData = e.target.result;
 
-        // UI par percent text badalna
-        if (bValText) bValText.innerText = bValue + '%';
-        if (cValText) cValText.innerText = cValue + '%';
+                    if (img && text) {
+                        img.src = finalPhotoData;
+                        img.style.display = 'block';
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        img.style.objectPosition = 'center 20%';
+                        img.style.position = 'absolute';
 
-        // Filter apply karna
-        img.style.filter = 'brightness(' + bValue + '%) contrast(' + cValue + '%)';
-    }
+                        imgLeft = 0;
+                        imgTop = 0;
+                        img.style.left = '0px';
+                        img.style.top = '0px';
+                        currentScale = 1.0;
+                        img.style.transform = 'scale(' + currentScale + ')';
 
-    // Apne maujuda zoomPhoto function ko isse replace karein
-function zoomPhoto(value) {
-    var img = document.getElementById('previewImage');
-    if (!img || img.style.display !== 'block') return;
-
-    currentScale += value;
-
-    // फोटो की लिमिट (Min 0.4, Max 3.0)
-    if (currentScale < 0.4) currentScale = 0.4;
-    if (currentScale > 3.0) currentScale = 3.0;
-
-    // Sabse zaroori line: Zoom ke sath position (imgLeft, imgTop) ko bhi sath me jodna
-    img.style.transform = 'scale(' + currentScale + ')';
-}
-
-    
-function startDragging(e) {
-    // Agar click seedhe photo par hua hai, toh upload box khulne se roko
-    if (e.target.id === 'previewImage') {
-        e.preventDefault();
-        e.stopPropagation();
-    } else {
-        return; // Agar khali frame par click ho toh normal upload khule
-    }
-    
-    isDragging = true;
-    var img = document.getElementById('previewImage');
-    
-    // Mouse ki shuruati position
-    startX = e.clientX - imgLeft;
-    startY = e.clientY - imgTop;
-    
-    document.onmousemove = function(event) {
-        if (!isDragging) return;
-        
-        // Photo ko upar-neeche aur daayein-baayein move karna
-        imgLeft = event.clientX - startX;
-        imgTop = event.clientY - startY;
-        
-        img.style.left = imgLeft + 'px';
-        img.style.top = imgTop + 'px';
-    };
-    
-    document.onmouseup = function() {
-        isDragging = false;
-        document.onmousemove = null; // Mouse chhodte hi drag khatam
-    };
-}
-
-    // 7. MOUSE WHEEL SE ZOOM AUR CLICK PROTECTION
-    document.addEventListener('DOMContentLoaded', function() {
-        var frame = document.getElementById('photoFrame');
-        if (frame) {
-            // Mouse wheel zoom logic
-            frame.addEventListener('wheel', function(e) {
-                var img = document.getElementById('previewImage');
-                if (!img || img.style.display !== 'block') return;
-                
-                e.preventDefault();
-                if (e.deltaY < 0) {
-                    currentScale += 0.05;
-                } else {
-                    currentScale -= 0.05;
-                }
-                if (currentScale < 0.3) currentScale = 0.3;
-                if (currentScale > 3.0) currentScale = 3.0;
-                img.style.transform = 'scale(' + currentScale + ')';
-            });
-
-            // Click hone par dobara file opener na khule agar photo aa chuki hai
-            frame.addEventListener('click', function(e) {
-                var img = document.getElementById('previewImage');
-                if (img && img.style.display === 'block') {
-                    // Agar photo click par hila rahe ho toh click default behavior roko
-                    if(e.target.id === 'previewImage') {
-                        e.preventDefault();
+                        text.style.display = 'none';
                     }
-                }
-            });
+                };
+                reader.readAsDataURL(files[0]);
+            }
         }
-    });
-// [NEW] इसे goToStudio() के ठीक ऊपर पेस्ट कर दें
-function adjustPhotoBorder() {
-    var slider = document.getElementById('borderSlider');
-    if (!slider) return;
 
-    var thickness = slider.value;
-    var borderValSpan = document.getElementById('border-val');
-    if (borderValSpan) {
-        borderValSpan.innerText = thickness + "px";
-    }
-    
-    // सीधे आपकी लाइव फोटो को पकड़ना
-    var previewImg = document.getElementById('previewImage');
-    if (previewImg) {
-        if (parseFloat(thickness) === 0) {
-            previewImg.style.boxShadow = "none";
-        } else {
-            // [जादुई लाइन] inset box-shadow फोटो के अंदर की तरफ मजबूत काली बॉर्डर दिखाएगी
-            // इसे overflow: hidden कभी नहीं छुपा पाएगा और यह स्क्रीन पर लाइव दिखेगी!
-            previewImg.style.boxShadow = "inset 0 0 0 " + thickness + "px #000000";
-        }
-    }
-
-    // फोटो के बाहरी फ्रेम (डिब्बे) पर भी अंदरूनी बॉर्डर लगाना सुरक्षा के लिए
-    var frame = document.getElementById('photoFrame') || (previewImg ? previewImg.parentElement : null);
-    if (frame) {
-        if (parseFloat(thickness) === 0) {
-            frame.style.boxShadow = "none";
-        } else {
-            frame.style.boxShadow = "inset 0 0 0 " + thickness + "px #000000";
-        }
-    }
-}
-
-    function goToStudio() {
-    var img = document.getElementById('previewImage');
-    var frame = document.getElementById('photoFrame');
-    var slider = document.getElementById('borderSlider');
-    
-    if (finalPhotoData && finalPhotoData !== "") {
-        
-        // [CANVAS ENGINE START] - यह कोड आपके पुराने डेटा को खराब किए बिना स्क्रीनशॉट लेगा
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        
-        // स्टैंडर्ड पासपोर्ट साइज रेजोल्यूशन (350x450)
-        canvas.width = 350;
-        canvas.height = 450;
-        
-        // 1. बैकग्राउंड कलर पेंट करना
-        var bgColor = (frame && frame.style.backgroundColor) ? frame.style.backgroundColor : "#ffffff";
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // 2. फोटो को क्रॉप बॉक्स की पोजीशन और फिल्टर के साथ ड्रा करना
-        if (img) {
-            ctx.save();
-            
+        // 3. BRIGHTNESS & CONTRAST ENGINE
+        function applyFilters() {
+            var img = document.getElementById('previewImage');
             var bSlider = document.getElementById('brightnessSlider');
             var cSlider = document.getElementById('contrastSlider');
-            var bVal = bSlider ? bSlider.value : 100;
-            var cVal = cSlider ? cSlider.value : 100;
-            ctx.filter = 'brightness(' + bVal + '%) contrast(' + cVal + '%)';
-            
-            var rect = frame.getBoundingClientRect();
-            var scaleX = canvas.width / rect.width;
-            var scaleY = canvas.height / rect.height;
-            
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.translate(imgLeft * scaleX, imgTop * scaleY);
-            ctx.scale(currentScale, currentScale);
-            ctx.translate(-canvas.width / 2, -canvas.height / 2);
-            
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            ctx.restore();
+            var bValText = document.getElementById('brightnessVal');
+            var cValText = document.getElementById('contrastVal');
+
+            if (!img) return;
+
+            var bValue = bSlider ? bSlider.value : 100;
+            var cValue = cSlider ? cSlider.value : 100;
+
+            if (bValText) bValText.innerText = bValue + '%';
+            if (cValText) cValText.innerText = cValue + '%';
+
+            img.style.filter = 'brightness(' + bValue + '%) contrast(' + cValue + '%)';
         }
-        
-        // 3. बॉर्डर को कैनवास के सबसे ऊपर प्रिंट करना (ताकि स्टूडियो पेज पर गैप न आए)
-        var thickness = slider ? parseFloat(slider.value) : 0;
-        if (thickness > 0) {
-            var canvasThickness = thickness * (canvas.width / frame.clientWidth);
-            ctx.strokeStyle = "#000000";
-            ctx.lineWidth = canvasThickness;
-            ctx.strokeRect(canvasThickness/2, canvasThickness/2, canvas.width - canvasThickness, canvas.height - canvasThickness);
+
+        // 4. ZOOM
+        function zoomPhoto(value) {
+            var img = document.getElementById('previewImage');
+            if (!img || img.style.display !== 'block') return;
+
+            currentScale += value;
+            if (currentScale < 0.4) currentScale = 0.4;
+            if (currentScale > 3.0) currentScale = 3.0;
+
+            img.style.transform = 'scale(' + currentScale + ')';
         }
-        
-        // फाइनल रेंडर डेटा को लोकल स्टोरेज में सुरक्षित भेजना
-        var compiledPhoto = canvas.toDataURL("image/jpeg", 0.95);
-        localStorage.setItem("processedPhoto", compiledPhoto);
-        localStorage.setItem("photoFilter", "none"); 
-        localStorage.setItem("photoBgColor", bgColor);
-        
-        window.location.href = "studio.html";
-        // [CANVAS ENGINE END]
-        
-    } else {
-        alert("कृपया आगे बढ़ने से पहले एक फोटो अपलोड करें!");
-    }
-}
-// [SURE FIX] यह कोड स्लाइडर के मूवमेंट को लाइव सुनेगा और तुरंत बॉर्डर बदलेगा
-document.addEventListener('DOMContentLoaded', function() {
-    var slider = document.getElementById('borderSlider');
-    if (slider) {
-        // 'input' इवेंट स्लाइडर के खिसकते ही तुरंत काम करता है
-        slider.addEventListener('input', adjustPhotoBorder);
-        slider.addEventListener('change', adjustPhotoBorder);
-    }
-    
-    // शुरुआती लोड पर भी 1px की डिफॉल्ट बॉर्डर सेट रखने के लिए
-    setTimeout(adjustPhotoBorder, 200);
-});
 
-</script>
+        // 5. DRAG TO REPOSITION (mouse + touch/finger dono ke liye)
+        function getPointerXY(e) {
+            // Agar touch event hai to uske andar se touches[0] nikalna,
+            // warna normal mouse event ka clientX/clientY use karna
+            if (e.touches && e.touches.length > 0) {
+                return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+            if (e.changedTouches && e.changedTouches.length > 0) {
+                return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+            }
+            return { x: e.clientX, y: e.clientY };
+        }
 
+        function startDragging(e) {
+            if (e.target.id === 'previewImage') {
+                e.preventDefault();
+                e.stopPropagation();
+            } else {
+                return;
+            }
 
+            isDragging = true;
+            var img = document.getElementById('previewImage');
+            var pos = getPointerXY(e);
 
+            startX = pos.x - imgLeft;
+            startY = pos.y - imgTop;
 
+            function moveHandler(event) {
+                if (!isDragging) return;
+                event.preventDefault();
+
+                var movePos = getPointerXY(event);
+                imgLeft = movePos.x - startX;
+                imgTop = movePos.y - startY;
+
+                img.style.left = imgLeft + 'px';
+                img.style.top = imgTop + 'px';
+            }
+
+            function endHandler() {
+                isDragging = false;
+                document.onmousemove = null;
+                document.onmouseup = null;
+                document.removeEventListener('touchmove', moveHandler);
+                document.removeEventListener('touchend', endHandler);
+            }
+
+            // Mouse ke liye
+            document.onmousemove = moveHandler;
+            document.onmouseup = endHandler;
+
+            // Finger/touch ke liye
+            document.addEventListener('touchmove', moveHandler, { passive: false });
+            document.addEventListener('touchend', endHandler);
+        }
+
+        // 6. MOUSE WHEEL ZOOM
+        document.addEventListener('DOMContentLoaded', function() {
+            var frame = document.getElementById('photoFrame');
+            if (frame) {
+                frame.addEventListener('wheel', function(e) {
+                    var img = document.getElementById('previewImage');
+                    if (!img || img.style.display !== 'block') return;
+
+                    e.preventDefault();
+                    if (e.deltaY < 0) {
+                        currentScale += 0.05;
+                    } else {
+                        currentScale -= 0.05;
+                    }
+                    if (currentScale < 0.3) currentScale = 0.3;
+                    if (currentScale > 3.0) currentScale = 3.0;
+                    img.style.transform = 'scale(' + currentScale + ')';
+                });
+
+                frame.addEventListener('click', function(e) {
+                    var img = document.getElementById('previewImage');
+                    if (img && img.style.display === 'block') {
+                        if (e.target.id === 'previewImage') {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+        });
+
+        // 7. BORDER THICKNESS
+        function adjustPhotoBorder() {
+            var slider = document.getElementById('borderSlider');
+            if (!slider) return;
+
+            var thickness = slider.value;
+            var borderValSpan = document.getElementById('border-val');
+            if (borderValSpan) {
+                borderValSpan.innerText = thickness + "px";
+            }
+
+            var previewImg = document.getElementById('previewImage');
+            if (previewImg) {
+                if (parseFloat(thickness) === 0) {
+                    previewImg.style.boxShadow = "none";
+                } else {
+                    previewImg.style.boxShadow = "inset 0 0 0 " + thickness + "px #000000";
+                }
+            }
+
+            var frame = document.getElementById('photoFrame') || (previewImg ? previewImg.parentElement : null);
+            if (frame) {
+                if (parseFloat(thickness) === 0) {
+                    frame.style.boxShadow = "none";
+                } else {
+                    frame.style.boxShadow = "inset 0 0 0 " + thickness + "px #000000";
+                }
+            }
+        }
+
+        // 8. GO TO STUDIO (canvas render + navigation)
+        function goToStudio() {
+            var img = document.getElementById('previewImage');
+            var frame = document.getElementById('photoFrame');
+            var slider = document.getElementById('borderSlider');
+
+            if (finalPhotoData && finalPhotoData !== "") {
+
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+
+                canvas.width = 350;
+                canvas.height = 450;
+
+                var bgColor = (frame && frame.style.backgroundColor) ? frame.style.backgroundColor : "#ffffff";
+                ctx.fillStyle = bgColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (img) {
+                    ctx.save();
+
+                    var bSlider = document.getElementById('brightnessSlider');
+                    var cSlider = document.getElementById('contrastSlider');
+                    var bVal = bSlider ? bSlider.value : 100;
+                    var cVal = cSlider ? cSlider.value : 100;
+                    ctx.filter = 'brightness(' + bVal + '%) contrast(' + cVal + '%)';
+
+                    var rect = frame.getBoundingClientRect();
+                    var scaleX = canvas.width / rect.width;
+                    var scaleY = canvas.height / rect.height;
+
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.translate(imgLeft * scaleX, imgTop * scaleY);
+                    ctx.scale(currentScale, currentScale);
+                    ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    ctx.restore();
+                }
+
+                var thickness = slider ? parseFloat(slider.value) : 0;
+                if (thickness > 0) {
+                    var canvasThickness = thickness * (canvas.width / frame.clientWidth);
+                    ctx.strokeStyle = "#000000";
+                    ctx.lineWidth = canvasThickness;
+                    ctx.strokeRect(canvasThickness / 2, canvasThickness / 2, canvas.width - canvasThickness, canvas.height - canvasThickness);
+                }
+
+                var compiledPhoto = canvas.toDataURL("image/jpeg", 0.95);
+                localStorage.setItem("processedPhoto", compiledPhoto);
+                localStorage.setItem("photoFilter", "none");
+                localStorage.setItem("photoBgColor", bgColor);
+
+                window.location.href = "studio.html";
+
+            } else {
+                alert("कृपया आगे बढ़ने से पहले एक फोटो अपलोड करें!");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var slider = document.getElementById('borderSlider');
+            if (slider) {
+                slider.addEventListener('input', adjustPhotoBorder);
+                slider.addEventListener('change', adjustPhotoBorder);
+            }
+            setTimeout(adjustPhotoBorder, 200);
+        });
+    </script>
+
+</body>
+</html>
